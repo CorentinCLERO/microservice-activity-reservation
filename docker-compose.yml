@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "3000:3000"
+    environment:
+      - ./api-gateway/.env
+    networks:
+      - microservices-net
+
+  orchestrator:
+    build: ./orchestrator
+    ports:
+      - "3004:3004"
+    environment:
+      - ./orchestrator/.env
+    networks:
+      - microservices-net
+      
+  notification-service:
+    build: ./notification-service
+    ports:
+      - "3005:3005"
+    environment:
+      - ./notification-service/.env
+    networks:
+      - microservices-net
+    volumes:
+      - notification-logs:/usr/src/app/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3005/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  notification-logs:
+
+networks:
+  microservices-net:
+    driver: bridge
