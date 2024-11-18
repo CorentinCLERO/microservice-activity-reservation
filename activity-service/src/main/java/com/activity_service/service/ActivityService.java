@@ -13,7 +13,6 @@ import com.activity_service.repository.ActivityRepository;
 public class ActivityService {
     private final ActivityRepository activityRepository;
 
-    // Constructeur injectant le repository
     public ActivityService(ActivityRepository activityRepository) {
         this.activityRepository = activityRepository;
     }
@@ -50,8 +49,14 @@ public class ActivityService {
         if (updatedActivity.getDescription() != null) {
             activity.setDescription(updatedActivity.getDescription());
         }
+        if (updatedActivity.getAvailable()!= null) {
+            activity.setAvailable(updatedActivity.getAvailable());
+        }
         if (updatedActivity.getPrice() != null) {
             activity.setPrice(updatedActivity.getPrice());
+        }
+        if(updatedActivity.getDate() != null){
+            activity.setDate(updatedActivity.getDate());
         }
         return activityRepository.save(activity);
     }
@@ -64,5 +69,20 @@ public class ActivityService {
             throw new IllegalArgumentException("Activity not found: " + id);
         }
         activityRepository.deleteById(id);
+    }
+
+    public void updateAvailability(String id , Boolean available){
+        if(!ObjectId.isValid(id)){
+            throw new IllegalArgumentException("Invalid activity ID");
+        }
+        Optional<Activity> optionalActivity = activityRepository.findById(id);
+        if(optionalActivity.isEmpty()){
+            throw new IllegalArgumentException("Activity not found: " + id);
+        }
+
+        Activity activity = optionalActivity.get();
+        activity.setAvailable(available);
+        activityRepository.save(activity);
+        
     }
 }

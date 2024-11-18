@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.*;
 import com.activity_service.model.Activity;
 import com.activity_service.service.ActivityService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/activities") 
@@ -33,12 +35,24 @@ public class ActivityController {
     }
 
     @PostMapping
-    public ResponseEntity<Activity> createActivity(@RequestBody Activity activity,@RequestHeader("Authorization") String authToken) {
+    public ResponseEntity<Map<String, String>> createActivity(@RequestBody Activity activity,@RequestHeader("Authorization") String authToken) {
+        Map<String, String> response = new HashMap<>();
         if (!isAdmin(authToken)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        Activity createdActivity = activityService.createActivity(activity);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdActivity);
+        try{
+            Activity createdActivity = activityService.createActivity(activity);
+            response.put("activityId", createdActivity.getId());
+            response.put("message", "Activity created successfully");
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch(IllegalArgumentException e){
+            response.put("message", "Invalid data provided");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        } catch (Exception e){
+            response.put("message", "An error occurred while creating the activity");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+        
     }
 
 
@@ -68,6 +82,31 @@ public class ActivityController {
         }
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<Map<String,String>> patchActivity(@PathVariable String id,@RequestHeader("Authorization") String authToken,@RequestBody Map<String,Boolean> requestBody ){
+        Map<String,String> response = new HashMap<>();
+
+        if (!isAdmin(authToken)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        if(!requestBody.containsKey("available")){
+            response.put("message", "Missing 'available' field in request body");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+        try{
+            Boolean available = requestBody.get("available");
+            activityService.updateAvailability(id, available);
+            response.put("message", "Availability updated");
+            return ResponseEntity.ok(response);
+        } catch(IllegalArgumentException e){
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }catch (Exception e) {
+            response.put("message", "An error occurred while updating availability");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+
+    }
     private boolean isAdmin(String authToken) {
         return authToken != null && authToken.contains("admin");
     }
