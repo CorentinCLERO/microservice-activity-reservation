@@ -35,6 +35,17 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+  
+  activity-service :
+    build:
+      context: ./activity-service
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_DATA_MONGODB_URI: "mongodb+srv://prashath:17112001@cluster0.xfs2y.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+    networks:
+      - microservices-net
+    restart: always 
 
 volumes:
   notification-logs:
