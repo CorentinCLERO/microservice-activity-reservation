@@ -1,3 +1,4 @@
+const promiseRetry = require('promise-retry');
 const userService = require('../services/userService');
 const activityService = require('../services/activityService');
 const reservationService = require('../services/reservationService');
@@ -23,11 +24,25 @@ async function orchestrateReservation(req, res) {
     const reservation = await reservationService.createReservation(userId, activityId);
 
     try {
-      // 4. Mettre à jour la disponibilité
-      await activityService.updateAvailability(activityId, false);
+      // 4. Mettre à jour la disponibilité avec retry
+      await promiseRetry((retry, number) => {
+        console.log(`Tentative de mise à jour de la disponibilité: ${number}`);
+        return activityService.updateAvailability(activityId, false).catch(retry);
+      }, {
+        retries: 3,
+        minTimeout: 1000,
+        maxTimeout: 5000
+      });
 
-      // 5. Envoyer la notification
-      await notificationService.sendNotification(userId, `Reservation confirmed for activity ${activityId}`);
+      // 5. Envoyer la notification avec retry
+      await promiseRetry((retry, number) => {
+        console.log(`Tentative d'envoi de notification: ${number}`);
+        return notificationService.sendNotification(userId, `Reservation confirmed for activity ${activityId}`).catch(retry);
+      }, {
+        retries: 3,
+        minTimeout: 1000,
+        maxTimeout: 5000
+      });
 
       res.json({
         message: 'Reservation successful',
