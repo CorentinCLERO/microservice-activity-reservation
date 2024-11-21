@@ -1,0 +1,11 @@
+# Specify the parent image from which we are building 
+FROM nginx:alpine
+
+# Sets the working directory for the instruction that follow it
+WORKDIR /var/www
+
+# Run nginx
+CMD ["nginx"]
+
+# Inform docker that the container listens on the specified network ports at runtime
+EXPOSE 84

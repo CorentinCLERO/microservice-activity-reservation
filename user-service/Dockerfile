@@ -18,5 +18,7 @@ COPY . .
 
 CMD composer install ;  php-fpm
 
-EXPOSE 8000
-# CMD php bin/console server:run 0.0.0.0:8000
+RUN curl -sS https://get.symfony.com/cli/installer | bash 
+RUN mv /root/.symfony5/bin/symfony /usr/local/bin/symfony
+
+EXPOSE 9000
