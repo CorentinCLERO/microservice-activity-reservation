@@ -3,6 +3,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const routes = require('./routes');
 const errorHandler = require('./middleware/errorHandler');
+const logging = require('./middleware/logging');
 const config = require('./config/config');
 
 const app = express();
@@ -11,6 +12,9 @@ const app = express();
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
+
+// Middleware de logging
+app.use(logging);
 
 // Routes
 app.use('/api', routes);
