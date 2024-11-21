@@ -1,7 +1,0 @@
-
-services:
-###> doctrine/doctrine-bundle ###
-  database:
-    ports:
-      - "8002"
-###< doctrine/doctrine-bundle ###
