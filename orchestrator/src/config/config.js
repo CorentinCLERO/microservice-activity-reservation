@@ -17,7 +17,7 @@ const config = {
         }
     },
     jwt: {
-        secret: process.env.JWT_SECRET || 'your-secret-key',
+        secret: process.env.JWT_SECRET || 'your_secret_here',
         expiresIn: '24h'
     },
     redis: {

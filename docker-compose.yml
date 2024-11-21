@@ -100,7 +100,7 @@ services:
       - microservices-net
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3003/health"]
-      interval: 30s
+      interval: 300s
       timeout: 10s
       retries: 3
       start_period: 40s
