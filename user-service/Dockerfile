@@ -40,7 +40,7 @@ RUN composer dump-autoload --optimize \
 RUN ls -la /var/www/vendor \
     && chmod -R 777 /var/www/var
 
-RUN php bin/console lexik:jwt:generate-keypair --overwrite
+# RUN php bin/console lexik:jwt:generate-keypair --overwrite
 
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 
