@@ -15,6 +15,9 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException;
 
 
 class UserController extends AbstractController
@@ -39,7 +42,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/auth/login', name: 'userService_login', methods: ['POST'])]
-    public function login(#[CurrentUser] ?User $user): Response
+    public function login(#[CurrentUser] ?User $user): JsonResponse
     {
         if (null === $user) {
             return $this->json(['message' => 'missing credentials'], Response::HTTP_UNAUTHORIZED);
@@ -47,5 +50,17 @@ class UserController extends AbstractController
 
         return $this->json([
         ]);
+    }
+
+    #[Route('/auth/validate', name: 'userService_token_validation', methods: ['POST'])]
+    public function validateToken(JWTTokenManagerInterface $jwtManager, TokenStorageInterface $tokenStorageInterface): JsonResponse
+    {
+        try{
+            $decodedJwtToken = $jwtManager->decode($tokenStorageInterface->getToken());
+            return $this->json(['validationStatus' => $decodedJwtToken], Response::HTTP_UNAUTHORIZED);
+        }
+        catch(JWTDecodeFailureException $error){
+            return $this->json(['message' => $error], Response::HTTP_UNAUTHORIZED);
+        }
     }
 }
