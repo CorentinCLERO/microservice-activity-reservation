@@ -7,7 +7,8 @@ const config = require('../config/config');
 // Inscription
 router.post('/register', async (req, res, next) => {
     try {
-        const response = await axios.post(`${config.services.orchestrator.url}/users/register`, req.body);
+        console.log('Attempting to reach user service at:', `${config.services.users}/users`);
+        const response = await axios.post(`${config.services.users}/users`, req.body);
         res.status(201).json(response.data);
     } catch (error) {
         next(error);
@@ -17,7 +18,8 @@ router.post('/register', async (req, res, next) => {
 // Connexion
 router.post('/login', async (req, res, next) => {
     try {
-        const response = await axios.post(`${config.services.orchestrator.url}/users/login`, req.body);
+        console.log('Attempting to reach user service at:', `${config.services.users}/auth/login`);
+        const response = await axios.post(`${config.services.users}/auth/login`, req.body);
         res.json(response.data);
     } catch (error) {
         next(error);
@@ -27,7 +29,7 @@ router.post('/login', async (req, res, next) => {
 // Récupérer le profil utilisateur
 router.get('/profile', authenticateToken, async (req, res, next) => {
     try {
-        const response = await axios.get(`${config.services.orchestrator.url}/users/profile`, {
+        const response = await axios.get(`${config.services.users}/users/profile`, {
             headers: { Authorization: req.headers.authorization }
         });
         res.json(response.data);
@@ -39,7 +41,7 @@ router.get('/profile', authenticateToken, async (req, res, next) => {
 // Mettre à jour le profil utilisateur
 router.put('/profile', authenticateToken, async (req, res, next) => {
     try {
-        const response = await axios.put(`${config.services.orchestrator.url}/users/profile`, req.body, {
+        const response = await axios.put(`${config.services.users}/users/profile`, req.body, {
             headers: { Authorization: req.headers.authorization }
         });
         res.json(response.data);
@@ -54,7 +56,7 @@ router.get('/', authenticateToken, async (req, res, next) => {
         if (req.user.role !== 'admin') {
             return res.status(403).json({ message: 'Accès non autorisé' });
         }
-        const response = await axios.get(`${config.services.orchestrator.url}/users`);
+        const response = await axios.get(`${config.services.users}/users`);
         res.json(response.data);
     } catch (error) {
         next(error);
@@ -67,7 +69,7 @@ router.delete('/:id', authenticateToken, async (req, res, next) => {
         if (req.user.role !== 'admin') {
             return res.status(403).json({ message: 'Accès non autorisé' });
         }
-        const response = await axios.delete(`${config.services.orchestrator.url}/users/${req.params.id}`);
+        const response = await axios.delete(`${config.services.users}/users/${req.params.id}`);
         res.json(response.data);
     } catch (error) {
         next(error);
