@@ -28,11 +28,13 @@ func loadEnv() {
 }
 
 func createReservation(context *gin.Context) {
+	fmt.Println("Received reservation creation request")
 	var input model.ReservationInput
 
 	if err := context.ShouldBindJSON(&input); err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
+			fmt.Printf("Error binding JSON: %v\n", err)
+			context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
 	}
 
 	reservation := model.Reservation{
@@ -78,11 +80,20 @@ func deleteReservation(context *gin.Context) {
 	context.JSON(http.StatusOK, message)
 }
 
+func healthCheck(context *gin.Context) {
+	context.JSON(http.StatusOK, gin.H{"status": "OK"})
+}
+
 func main() {
 	loadEnv()
 	loadDatabase()
 	engine := gin.New()
+	engine.Use(gin.Logger())
+	engine.Use(gin.Recovery())
+	fmt.Println("Setting up routes...")
+	engine.GET("/health", healthCheck)
 	engine.POST("/reservations", createReservation)
 	engine.DELETE("/reservations/:id", deleteReservation)
-	engine.Run("localhost:8080")
+	fmt.Println("Server starting on port 3003...")
+	engine.Run(":3003")
 }
