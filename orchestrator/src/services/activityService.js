@@ -4,17 +4,22 @@ const config = require('../config/config');
 class ActivityService {
   async checkAvailability(activityId) {
     try {
-      const response = await axios.get(`${config.services.activities}/activities/${activityId}`);
+      // console.log(activityId);
+      const response = await axios.get(`${config.services.activities.url}/api/activities/${activityId}`);
+      // console.log(response.data);
       return response.data;
     } catch (error) {
+      console.log(error);
       throw new Error('Failed to check activity availability');
     }
   }
 
   async updateAvailability(activityId, available) {
     try {
-      const response = await axios.patch(`${config.services.activities}/activities/${activityId}`, {
-        available
+      console.log(activityId);
+      console.log(available);
+      const response = await axios.patch(`${config.services.activities.url}/api/activities/${activityId}`, {
+        'available' : available
       });
       return response.data;
     } catch (error) {

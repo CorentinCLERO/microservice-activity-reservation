@@ -32,9 +32,9 @@ func createReservation(context *gin.Context) {
 	var input model.ReservationInput
 
 	if err := context.ShouldBindJSON(&input); err != nil {
-			fmt.Printf("Error binding JSON: %v\n", err)
-			context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
+		fmt.Printf("Error binding JSON: %v\n", err)
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	reservation := model.Reservation{
@@ -49,7 +49,7 @@ func createReservation(context *gin.Context) {
 		return
 	}
 
-	context.JSON(http.StatusCreated, gin.H{"Reservation created": createdReservation})
+	context.JSON(http.StatusCreated, gin.H{"reservation": createdReservation})
 }
 
 func deleteReservation(context *gin.Context) {

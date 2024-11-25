@@ -4,16 +4,16 @@ const config = {
     port: process.env.PORT || 3004,
     services: {
         users: {
-            url: process.env.USERS_SERVICE_URL || 'http://users-service:3001'
+            url: process.env.USER_SERVICE_URL || 'http://user-service:3001'
         },
         activities: {
-            url: process.env.ACTIVITIES_SERVICE_URL || 'http://activities-service:3002'
+            url: process.env.ACTIVITY_SERVICE_URL || 'http://activity-service:3002'
         },
         notifications: {
             url: process.env.NOTIFICATION_SERVICE_URL || 'http://notification-service:3005'
         },
         reservations: {
-            url: process.env.RESERVATIONS_SERVICE_URL || 'http://reservations-service:3003'
+            url: process.env.RESERVATION_SERVICE_URL || 'http://reservations-service:3003'
         }
     },
     jwt: {

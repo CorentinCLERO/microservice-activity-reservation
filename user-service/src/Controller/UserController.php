@@ -53,11 +53,11 @@ class UserController extends AbstractController
     }
 
     #[Route('/auth/validate', name: 'userService_token_validation', methods: ['POST'])]
-    public function validateToken(JWTTokenManagerInterface $jwtManager, TokenStorageInterface $tokenStorageInterface): JsonResponse
+    public function validateToken(Request $req, JWTTokenManagerInterface $jwtManager, TokenStorageInterface $tokenStorageInterface): JsonResponse
     {
         try{
             $decodedJwtToken = $jwtManager->decode($tokenStorageInterface->getToken());
-            return $this->json(['validationStatus' => $decodedJwtToken], Response::HTTP_UNAUTHORIZED);
+            return $this->json(['validationStatus' => $decodedJwtToken, 'isValid'=>true], Response::HTTP_OK);
         }
         catch(JWTDecodeFailureException $error){
             return $this->json(['message' => $error], Response::HTTP_UNAUTHORIZED);

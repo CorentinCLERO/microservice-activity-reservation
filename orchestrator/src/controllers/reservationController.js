@@ -6,14 +6,13 @@ const notificationService = require('../services/notificationService');
 
 async function orchestrateReservation(req, res) {
   const { userId, activityId, token } = req.body;
-
   try {
     // 1. Valider le token
     const validationResult = await userService.validateToken(token);
     if (!validationResult.isValid) {
       return res.status(401).json({ message: 'Invalid token' });
     }
-
+    
     // 2. Vérifier la disponibilité de l'activité
     const activity = await activityService.checkAvailability(activityId);
     if (!activity.available) {
@@ -22,7 +21,7 @@ async function orchestrateReservation(req, res) {
 
     // 3. Créer la réservation
     const reservation = await reservationService.createReservation(userId, activityId);
-
+    console.log(reservation);
     try {
       // 4. Mettre à jour la disponibilité avec retry
       await promiseRetry((retry, number) => {
@@ -46,11 +45,11 @@ async function orchestrateReservation(req, res) {
 
       res.json({
         message: 'Reservation successful',
-        reservationId: reservation.reservationId
+        reservationId: reservation.reservation.id
       });
     } catch (error) {
       // Compensation en cas d'erreur
-      await reservationService.cancelReservation(reservation.reservationId);
+      await reservationService.cancelReservation(reservation.reservation.id);
       await activityService.updateAvailability(activityId, true);
       throw error;
     }

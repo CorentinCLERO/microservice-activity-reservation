@@ -6,7 +6,6 @@ const authenticateToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
     const publicKey = fs.readFileSync('/usr/src/app/src/middleware/public.pub', { encoding: 'utf-8', flag: 'r' })
-    console.log(publicKey)
     if (!token) {
         return res.status(401).json({ message: 'Token manquant' });
     }

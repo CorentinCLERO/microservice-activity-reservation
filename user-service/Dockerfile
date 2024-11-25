@@ -42,7 +42,7 @@ RUN ls -la /var/www/vendor \
 
 # RUN php bin/console lexik:jwt:generate-keypair --overwrite
 
-ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+# ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 
 CMD ["php", "-S", "0.0.0.0:3001", "-t", "public"]
 
