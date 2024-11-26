@@ -35,11 +35,11 @@ public class ActivityController {
     }
 
     @PostMapping
-    public ResponseEntity<Map<String, String>> createActivity(@RequestBody Activity activity,@RequestHeader("Authorization") String authToken) {
+    public ResponseEntity<Map<String, String>> createActivity(@RequestBody Activity activity) {
         Map<String, String> response = new HashMap<>();
-        if (!isAdmin(authToken)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+        // if (!isAdmin(authToken)) {
+        //     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        // }
         try{
             Activity createdActivity = activityService.createActivity(activity);
             response.put("activityId", createdActivity.getId());
@@ -57,10 +57,10 @@ public class ActivityController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<Activity> updateActivity(@PathVariable String id,@RequestBody Activity updatedActivity,@RequestHeader("Authorization") String authToken) {
-        if (!isAdmin(authToken)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+    public ResponseEntity<Activity> updateActivity(@PathVariable String id,@RequestBody Activity updatedActivity) {
+        // if (!isAdmin(authToken)) {
+        //     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        // }
         try {
             Activity updated = activityService.updateActivity(id, updatedActivity);
             return ResponseEntity.ok(updated);
@@ -70,10 +70,10 @@ public class ActivityController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteActivity(@PathVariable String id,@RequestHeader("Authorization") String authToken) {
-        if (!isAdmin(authToken)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+    public ResponseEntity<Void> deleteActivity(@PathVariable String id) {
+        // if (!isAdmin(authToken)) {
+        //     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        // }
         try {
             activityService.deleteActivity(id);
             return ResponseEntity.noContent().build();
@@ -83,12 +83,12 @@ public class ActivityController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Map<String,String>> patchActivity(@PathVariable String id,@RequestHeader("Authorization") String authToken,@RequestBody Map<String,Boolean> requestBody ){
+    public ResponseEntity<Map<String,String>> patchActivity(@PathVariable String id,@RequestBody Map<String,Boolean> requestBody ){
         Map<String,String> response = new HashMap<>();
 
-        if (!isAdmin(authToken)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+        // if (!isAdmin(authToken)) {
+        //     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        // }
         if(!requestBody.containsKey("available")){
             response.put("message", "Missing 'available' field in request body");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
@@ -107,7 +107,7 @@ public class ActivityController {
         }
 
     }
-    private boolean isAdmin(String authToken) {
-        return authToken != null && authToken.contains("admin");
-    }
+    // private boolean isAdmin(String authToken) {
+    //     return authToken != null && authToken.contains("admin");
+    // }
 }
