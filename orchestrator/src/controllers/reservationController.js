@@ -30,7 +30,7 @@ async function orchestrateReservation(req, res) {
       }, {
         retries: 3,
         minTimeout: 1000,
-        maxTimeout: 5000
+        maxTimeout: 2000
       });
 
       // 5. Envoyer la notification avec retry
@@ -40,7 +40,7 @@ async function orchestrateReservation(req, res) {
       }, {
         retries: 3,
         minTimeout: 1000,
-        maxTimeout: 5000
+        maxTimeout: 2000
       });
 
       res.json({
